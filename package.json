@@ -1,7 +1,7 @@
 {
   "name": "@ubersetzer/cli",
   "description": "Ubersetzer CLI",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Manuel Heidrich",
   "bin": {
     "ubersetzer": "./bin/run"
