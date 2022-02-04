@@ -24,7 +24,7 @@ export default class Pull extends Command {
 
     let selectedProject = args.name;
 
-    if (!projectKeys.includes(selectedProject)) {
+    if (selectedProject && !projectKeys.includes(selectedProject)) {
       throw new Error(`Unknown project ${selectedProject}`);
     }
 
