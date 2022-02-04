@@ -53,7 +53,8 @@
   ],
   "homepage": "https://github.com/ubersetzerio/cli",
   "keywords": [
-    "oclif"
+    "ubersetzer",
+    "i18n"
   ],
   "license": "MIT",
   "main": "lib/index.js",
