@@ -10,7 +10,7 @@ export async function downloadExport(config: ProjectConfig): Promise<void> {
 
   try {
     const response = await axios.get(
-      `https://api.ubersetzer.io/v1/projects/${config.projectId}/keys/export`,
+      `https://api.ubersetzer.io/v1/projects/${config.projectId}/export/keys`,
       {
         headers: {
           "X-Api-Token": config.secret,
