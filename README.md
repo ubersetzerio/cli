@@ -1,5 +1,4 @@
-@ubersetzer/cli
-===============
+# @ubersetzer/cli
 
 Ubersetzer CLI
 

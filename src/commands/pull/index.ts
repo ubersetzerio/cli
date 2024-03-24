@@ -1,23 +1,24 @@
-import { Command, flags } from "@oclif/command";
-import * as inquirer from "inquirer";
-import { downloadExport } from "../utils/download-export.util";
-import { getConfig } from "../utils/get-config.util";
-import { unpackExport } from "../utils/unpack-export.util";
-import cli from "cli-ux";
+import { Args, Command, Flags, ux, handle } from '@oclif/core';
+import { select } from '@inquirer/prompts';
+import { getConfig } from '../../utils/get-config.util.js';
+import { unpackExport } from '../../utils/unpack-export.util.js';
+import { downloadExport } from '../../utils/download-export.util.js';
 
 export default class Pull extends Command {
-  static description = "Pull translations for a project";
+  static description = 'Pull translations for a project';
 
   static examples = [`$ ubersetzer pull`];
 
   static flags = {
-    help: flags.help({ char: "h" }),
+    help: Flags.help({ char: 'h' }),
   };
 
-  static args = [{ name: "name" }];
+  static args = {
+    name: Args.string(),
+  };
 
   public async run() {
-    const { args } = this.parse(Pull);
+    const { args } = await this.parse(Pull);
 
     const config = await getConfig();
     const projectKeys = Object.keys(config.projects);
@@ -41,14 +42,10 @@ export default class Pull extends Command {
           });
         }
 
-        const { answer } = await inquirer.prompt([
-          {
-            name: "answer",
-            type: "list",
-            message: "Which project do you want to pull?",
-            choices,
-          },
-        ]);
+        const answer = await select({
+          message: 'Which project do you want to pull?',
+          choices,
+        });
 
         selectedProject = answer;
       }
@@ -56,20 +53,22 @@ export default class Pull extends Command {
 
     const projectConfig = config.projects[selectedProject];
 
-    cli.action.start("Pulling translations...");
+    ux.action.start('Pulling translations...');
 
     try {
       await downloadExport(projectConfig);
     } catch (error) {
-      cli.action.stop("Failed... ❌");
+      ux.action.stop('Failed... ❌');
 
-      throw new Error(
-        `API responded with ${error}. Please check your project's config.`
+      this.log(
+        `The API responded with ${error}. Please check your project's config.`,
       );
     }
 
     await unpackExport(projectConfig);
 
-    cli.action.stop("Done! ✅");
+    ux.action.stop('Done! ✅');
   }
+
+  async catch() {}
 }
