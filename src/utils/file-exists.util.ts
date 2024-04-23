@@ -1,4 +1,4 @@
-import { stat } from "fs/promises";
+import { stat } from 'fs/promises';
 
 export function fileExists(path: string): Promise<boolean> {
   return stat(path)

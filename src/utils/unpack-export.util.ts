@@ -1,12 +1,12 @@
-import { ProjectConfig } from "./get-config.util";
-import * as yauzl from "yauzl";
-import { TEMP_FILE_PATH } from "./download-export.util";
-import { createWriteStream } from "fs";
-import { mkdir, unlink } from "fs/promises";
-import { fileExists } from "./file-exists.util";
+import { ProjectConfig } from './get-config.util.js';
+import * as yauzl from 'yauzl';
+import { TEMP_FILE_PATH } from './download-export.util.js';
+import { createWriteStream } from 'fs';
+import { mkdir, unlink } from 'fs/promises';
+import { fileExists } from './file-exists.util.js';
 
 export async function unpackExport(config: ProjectConfig): Promise<void> {
-  config.path = config.path || "i18n";
+  config.path = config.path || 'i18n';
 
   const exists = await fileExists(config.path);
 
@@ -30,7 +30,7 @@ export async function unpackExport(config: ProjectConfig): Promise<void> {
         }
 
         zipfile.readEntry();
-        zipfile.on("entry", function (entry) {
+        zipfile.on('entry', function (entry) {
           if (/\/$/.test(entry.fileName)) {
             zipfile.readEntry();
           } else {
@@ -43,11 +43,11 @@ export async function unpackExport(config: ProjectConfig): Promise<void> {
                 return reject();
               }
 
-              readStream.on("end", function () {
+              readStream.on('end', function () {
                 zipfile.readEntry();
               });
 
-              let fileName = entry.fileName.split("/");
+              let fileName = entry.fileName.split('/');
               fileName = fileName[fileName.length - 1];
 
               readStream.pipe(createWriteStream(`${config.path}/${fileName}`));
@@ -55,14 +55,14 @@ export async function unpackExport(config: ProjectConfig): Promise<void> {
           }
         });
 
-        zipfile.once("end", async () => {
+        zipfile.once('end', async () => {
           zipfile.close();
 
           await unlink(TEMP_FILE_PATH);
 
           return resolve();
         });
-      }
+      },
     );
   });
 }

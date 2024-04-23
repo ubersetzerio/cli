@@ -1,7 +1,7 @@
-import { readFile } from "fs/promises";
-import { fileExists } from "./file-exists.util";
+import { readFile } from 'fs/promises';
+import { fileExists } from './file-exists.util.js';
 
-const configFilesNames = ["ubersetzer.config.json"];
+const configFileNames = ['ubersetzer.config.json'];
 
 export type UbersetzerConfig = {
   projects: Record<string, ProjectConfig>;
@@ -17,7 +17,7 @@ export type ProjectConfig = {
 export async function getConfig(): Promise<UbersetzerConfig> {
   const cwd = process.cwd();
 
-  for (const configFileName of configFilesNames) {
+  for (const configFileName of configFileNames) {
     const path = `${cwd}/${configFileName}`;
     const configExists = await fileExists(path);
 
@@ -26,7 +26,7 @@ export async function getConfig(): Promise<UbersetzerConfig> {
     }
 
     const config = JSON.parse(
-      await readFile(path, { encoding: "utf-8" })
+      await readFile(path, { encoding: 'utf-8' }),
     ) as UbersetzerConfig;
 
     return config;
