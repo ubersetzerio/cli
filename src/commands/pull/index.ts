@@ -1,21 +1,23 @@
-import { Args, Command, Flags, ux, handle } from '@oclif/core';
 import { select } from '@inquirer/prompts';
+import {
+  Args, Command, Flags, handle, ux,
+} from '@oclif/core';
+
+import { downloadExport } from '../../utils/download-export.util.js';
 import { getConfig } from '../../utils/get-config.util.js';
 import { unpackExport } from '../../utils/unpack-export.util.js';
-import { downloadExport } from '../../utils/download-export.util.js';
 
 export default class Pull extends Command {
-  static description = 'Pull translations for a project';
-
-  static examples = [`$ ubersetzer pull`];
-
+  static args = {
+    name: Args.string(),
+  };
+static description = 'Pull translations for a project';
+  static examples = ['$ ubersetzer pull'];
   static flags = {
     help: Flags.help({ char: 'h' }),
   };
 
-  static args = {
-    name: Args.string(),
-  };
+  async catch() {}
 
   public async run() {
     const { args } = await this.parse(Pull);
@@ -43,8 +45,8 @@ export default class Pull extends Command {
         }
 
         const answer = await select({
-          message: 'Which project do you want to pull?',
           choices,
+          message: 'Which project do you want to pull?',
         });
 
         selectedProject = answer;
@@ -60,15 +62,11 @@ export default class Pull extends Command {
     } catch (error) {
       ux.action.stop('Failed... ❌');
 
-      this.log(
-        `The API responded with ${error}. Please check your project's config.`,
-      );
+      this.log(`The API responded with ${error}. Please check your project's config.`);
     }
 
     await unpackExport(projectConfig);
 
     ux.action.stop('Done! ✅');
   }
-
-  async catch() {}
 }

@@ -1,33 +1,32 @@
+import { input, password } from '@inquirer/prompts';
 import { Command, Flags, ux } from '@oclif/core';
+import axios, { AxiosError } from 'axios';
+
+import { Accounts } from '../../types/auth.types.js';
 import { Storage } from '../../utils/storage.util.js';
 import { URL } from '../../utils/url.util.js';
-import axios, { AxiosError } from 'axios';
-import { Accounts } from '../../types/auth.types.js';
 
 export default class AuthLogin extends Command {
-  private storage = new Storage();
-
   static description = 'Login to Ubersetzer';
-
   static examples = ['<%= config.bin %> <%= command.id %>'];
-
   static flags = {
-    user: Flags.string({ char: 'u', description: 'Email to login' }),
-    password: Flags.string({ char: 'p', description: 'Password' }),
     help: Flags.help({ char: 'h' }),
+    password: Flags.string({ char: 'p', description: 'Password' }),
+    user: Flags.string({ char: 'u', description: 'Email to login' }),
   };
+private storage = new Storage();
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(AuthLogin);
 
-    const email = flags.user ?? (await ux.prompt('Email'));
-    const password =
-      flags.password ?? (await ux.prompt('Password', { type: 'hide' }));
+    const email = flags.user ?? (await input({ message: 'Email' }));
+    const pwd
+      = flags.password ?? (await password({ message: 'Password', mask: '*' }));
 
     try {
       const response = await axios.post(URL.authLogin(), {
         email,
-        password,
+        password: pwd,
         scope: 'cli',
       });
 
@@ -57,11 +56,9 @@ export default class AuthLogin extends Command {
         return;
       }
 
-      this.log(
-        `❌ Something went wrong. Please try again.${
-          errorResponse?.status ? ` (${errorResponse.status})` : ''
-        }`,
-      );
+      this.log(`❌ Something went wrong. Please try again.${
+        errorResponse?.status ? ` (${errorResponse.status})` : ''
+      }`);
     }
   }
 }

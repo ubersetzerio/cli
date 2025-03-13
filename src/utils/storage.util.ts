@@ -12,11 +12,11 @@ export class Storage {
     });
   }
 
-  public set(key: string, value: any): void {
-    this.configStore.set(key, value);
-  }
-
   public get(key: string): any {
     return this.configStore.get(key);
+  }
+
+  public set(key: string, value: any): void {
+    this.configStore.set(key, value);
   }
 }

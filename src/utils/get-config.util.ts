@@ -1,4 +1,5 @@
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
+
 import { fileExists } from './file-exists.util.js';
 
 const configFileNames = ['ubersetzer.config.json'];
@@ -8,10 +9,10 @@ export type UbersetzerConfig = {
 };
 
 export type ProjectConfig = {
-  projectId: string;
-  secret: string;
   name?: string;
   path?: string;
+  projectId: string;
+  secret: string;
 };
 
 export async function getConfig(): Promise<UbersetzerConfig> {
@@ -25,12 +26,10 @@ export async function getConfig(): Promise<UbersetzerConfig> {
       continue;
     }
 
-    const config = JSON.parse(
-      await readFile(path, { encoding: 'utf-8' }),
-    ) as UbersetzerConfig;
+    const config = JSON.parse(await readFile(path, { encoding: 'utf-8' })) as UbersetzerConfig;
 
     return config;
   }
 
-  return Promise.reject();
+  throw undefined;
 }

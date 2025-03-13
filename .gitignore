@@ -15,3 +15,5 @@ oclif.manifest.json
 # local development
 ubersetzer.config.json
 apps/
+
+tsconfig.tsbuildinfo

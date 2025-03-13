@@ -1,8 +1,9 @@
 import axios, { AxiosError } from 'axios';
-import { createWriteStream } from 'fs';
-import { unlink } from 'fs/promises';
-import { ProjectConfig } from './get-config.util.js';
-import { URL } from './url.util.js';
+import { createWriteStream } from 'node:fs';
+import { unlink } from 'node:fs/promises';
+
+import {ProjectConfig} from './get-config.util.js';
+import {URL} from './url.util.js';
 
 export const TEMP_FILE_PATH = 'ubersetzer.tmp.zip';
 
@@ -20,13 +21,9 @@ export async function downloadExport(config: ProjectConfig): Promise<void> {
     return new Promise((resolve, reject) => {
       response.data.pipe(writer);
 
-      writer.on('close', async () => {
-        return resolve();
-      });
+      writer.on('close', async () => resolve());
 
-      writer.on('errror', async (error) => {
-        return reject(error);
-      });
+      writer.on('errror', async error => reject(error));
     });
   } catch (error) {
     await unlink(TEMP_FILE_PATH);
